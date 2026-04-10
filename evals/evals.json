@@ -1,54 +1,48 @@
-{
-  "skill_name": "opencode-wsl-setup-skill",
-  "evals": [
-    {
-      "id": 1,
-      "prompt": "I just installed OpenCode on WSL but 127.0.0.1:4096 won't load — it just times out. I can run `opencode` from the terminal fine but the web UI doesn't work. Can you get it working?",
-      "expected_output": "Full setup flow: detect environment, create systemd service, deploy Windows launcher, install plugins, start service, verify. No unnecessary prompts to the user.",
-      "files": [],
-      "expectations": [
-        "Runs environment detection commands (whoami, binary check, DB check, service check, Windows username)",
-        "Creates systemd service unit file at ~/.config/systemd/user/opencode-web.service",
-        "Runs daemon-reload, enable, and enable-linger",
-        "Deploys OpenCode-WSL.bat launcher to Windows Desktop",
-        "Writes plugin config to ~/.opencode/opencode.json with all 10 plugins",
-        "Clones superpowers repo if not present",
-        "Configures Context7 MCP with command as JSON array (not string)",
-        "Starts service and verifies it is active",
-        "Presents a clean summary at the end",
-        "Does NOT ask the user unnecessary questions — infers from environment"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "My OpenCode sessions keep disappearing after I restart WSL. I can see the session folders still exist in ~/.local/share/opencode/sessions/ but the web UI sidebar is completely empty. This is driving me crazy.",
-      "expected_output": "Identifies the DB path mangling bug, runs the fix script automatically without asking for confirmation, and restarts the service.",
-      "files": [],
-      "expectations": [
-        "Identifies this as the DB path mangling bug (not a generic 'clear cache' suggestion)",
-        "Runs opencode_db_fix.py with --dry-run first to diagnose",
-        "Auto-applies the fix with --apply without asking user for permission",
-        "Mentions that a backup was created automatically",
-        "Restarts the opencode-web service after the fix",
-        "Does NOT suggest deleting session data or reinstalling OpenCode"
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "I want the full plugin stack for OpenCode — swarm, memory, safety net, Context7, superpowers, everything. I'm on WSL. Just set it all up for me.",
-      "expected_output": "Stops service, installs all 10 plugins plus Context7 MCP, clones superpowers, restarts service. Uses array format for Context7 command.",
-      "files": [],
-      "expectations": [
-        "Stops the opencode-web service before editing config files",
-        "Writes all 10 plugins to ~/.opencode/opencode.json plugin array",
-        "Uses absolute path for superpowers plugin (/home/<user>/superpowers)",
-        "Clones superpowers from github.com/obra/superpowers if not present",
-        "Configures Context7 MCP in ~/.config/opencode/opencode.json",
-        "Context7 command is a JSON array ['npx', '-y', '@upstash/context7-mcp'], NOT a string",
-        "Preserves existing keys in config files (merge, not overwrite)",
-        "Restarts service after config changes",
-        "Verifies service is active after restart"
-      ]
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "fresh-setup",
+    "prompt": "I just installed OpenCode on WSL but 127.0.0.1:4096 won't load — it just times out. I can run `opencode` from the terminal fine but the web UI doesn't work. Can you get it working?",
+    "expectations": [
+      "Runs environment detection commands (whoami, binary check, DB check, service status, Windows username)",
+      "Creates systemd service unit file at ~/.config/systemd/user/opencode-web.service",
+      "Runs daemon-reload, enable, and enable-linger",
+      "Deploys OpenCode-WSL.bat launcher to Windows Desktop",
+      "Writes plugin config with all 10 plugins to ~/.opencode/opencode.json",
+      "Clones superpowers repo if not present",
+      "Configures Context7 MCP with command as JSON array (not string)",
+      "Starts service and verifies it is active",
+      "Presents a clean summary at the end",
+      "Does NOT ask the user unnecessary questions - infers from environment"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "broken-sessions",
+    "prompt": "My OpenCode sessions keep disappearing after restart. I open OpenCode and the sidebar is empty every time. What's wrong?",
+    "expectations": [
+      "Identifies this as the DB path mangling bug (not a generic 'clear cache' suggestion)",
+      "Runs opencode_db_fix.py with --dry-run first to diagnose",
+      "Auto-applies the fix with --apply without asking user for permission",
+      "Mentions that a backup was created automatically",
+      "Restarts the opencode-web service after the fix",
+      "Does NOT suggest deleting session data or reinstalling OpenCode"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "plugin-install",
+    "prompt": "I want the full plugin stack — swarm, memory, safety net, Context7, superpowers, everything. Can you set it all up?",
+    "expectations": [
+      "Stops the opencode-web service before editing config files",
+      "Writes all 10 plugins to ~/.opencode/opencode.json plugin array",
+      "Uses absolute path for superpowers plugin (/home/<user>/superpowers)",
+      "Clones superpowers from github.com/obra/superpowers if not present",
+      "Configures Context7 MCP in ~/.config/opencode/opencode.json",
+      "Context7 command is a JSON array, NOT a string",
+      "Preserves existing keys in config files (merge, not overwrite)",
+      "Restarts service after config changes",
+      "Verifies service is active after restart"
+    ]
+  }
+]

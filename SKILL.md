@@ -1,5 +1,6 @@
 ---
-name: opencode-wsl-setup-skill
+name: opencode-wsl-setup
+version: 1.0.0
 description: >
   Full automated setup of OpenCode on WSL — fixes broken session history
   (DB path mangling bug), creates a systemd auto-start service, deploys a

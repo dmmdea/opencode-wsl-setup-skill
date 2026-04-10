@@ -1,4 +1,0 @@
-refactor: rename skill to opencode-wsl-setup-skill
-
-Updated name field in SKILL.md frontmatter and evals.json to match
-the new canonical name.
